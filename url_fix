@@ -1,0 +1,46 @@
+.版本 2
+
+.子程序 URL_Fix, 文本型
+.参数 http, WinHttpW
+.参数 url, 文本型
+.局部变量 UrlA, 文本型
+.局部变量 str, 文本型
+.局部变量 status_code, 整数型
+.局部变量 UrlR, 文本型
+
+http.SetRedirect (假)
+UrlA ＝ url
+.判断开始 (取文本长度 (UrlA) ＜ 8)
+    UrlA ＝ #HTTP ＋ UrlA
+.默认
+    str ＝ 取文本左边 (UrlA, 8)
+    str ＝ 到小写 (str)
+    .如果 (str ≠ #HTTPS)
+        .如果真 (取文本左边 (str, 7) ≠ #HTTP)
+            UrlA ＝ #HTTP ＋ UrlA
+        .如果真结束
+
+    .否则
+        返回 (UrlA)
+    .如果结束
+
+.判断结束
+
+http.Open (“GET”, UrlA)
+http.Send (, , 5)
+UrlR ＝ http.GetResponseLocation (真)
+.如果真 (UrlR ＝ “”)
+    返回 (UrlA)
+.如果真结束
+
+.判断开始 (取文本长度 (UrlR) ＜ 8)
+    返回 (UrlA)
+.默认
+    str ＝ 取文本左边 (UrlR, 8)
+    str ＝ 到小写 (str)
+    .如果 (str ≠ #HTTPS)
+        返回 (UrlA)
+    .否则
+        返回 (UrlR)
+    .如果结束
+
